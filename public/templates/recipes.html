@@ -1,0 +1,45 @@
+<div class="grid-100 row controls">
+  <div class="grid-30">
+    <!-- Added directives to the select element in order to populate the list with the categories from the database. Also added directives to handle when the user selects a new category so that the recipes list can be refreshed -->
+    <select ng-model="vm.category" ng-options="category.name for category in vm.categories track by category.name" ng-change="vm.searchRecipesByCategory(vm.category)">
+      <option value="">All Categories</option>
+      </select>
+  </div>
+  <div class="grid-70">
+    <div class="flush-right">
+      <!-- Added a directive in order to handle when the user clicks to add a new recipe. -->
+      <button ng-click="vm.addRecipe()">+ Add Recipe</button>
+    </div>
+  </div>
+</div>
+<div class="clear"></div>
+<!-- Added a directive to this div element so that it only displays when there are no recipes to display. -->
+<div class="grid-100 row" ng-show="vm.recipes.length === 0">
+  <div class="grid-70">
+    <p>No recipes found!</p>
+  </div>
+</div>
+<!-- Added a directive to this div element so that it repeats for each recipe to display. Also, added a directive to this div element so that it only displays when there are recipes to display. -->
+<div class="grid-100 row addHover" ng-show="vm.recipes.length > 0" ng-repeat="recipe in vm.recipes">
+  <!-- Replaced the anchor element's href attribute with a directive so that I can route the user to the Recipe Detail screen when they click on a row. -->
+  <a href="" ng-click="vm.editRecipe(recipe)">
+    <div class="grid-70">
+      <p>
+        <!-- Added binding expressions in order to display some information about the recipe. -->
+        <strong>{{recipe.name}}</strong> ({{recipe.category}})
+      </p>
+    </div>
+  </a>
+  <div class="hoverBlock">
+    <div class="grid-30">
+      <div class="flush-right">
+        <p>
+          <!-- Replaced anchor element's href attribute with a directive so to route the user to the Recipe Detail screen when they click on the 'Edit' link. -->
+          <a href="" ng-click="vm.editRecipe(recipe)"> <img src="images/edit.svg" height="12px"> Edit </a>
+          <!-- Added a directive to this anchor element so that the recipe can be deleted when the user clicks on the 'Delete' link. -->
+          <a class="no-action-link" ng-click="vm.deleteRecipe(recipe, $index)"> <img src="images/delete.svg" height="12px"> Delete </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
