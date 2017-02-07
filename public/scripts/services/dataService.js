@@ -36,7 +36,7 @@
          * @param {any} category
          * @param {any} successCallback
          */
-        this.getRecipesFromCategory = function (category, successCallback) {
+        this.getRecipesByCategory = function (category, successCallback) {
             $http.get(baseURL + '/recipes?category=' + category)
                 .then(successCallback, this.errorAlert);
         };
@@ -76,23 +76,26 @@
          * 
          * 
          * @param {any} id
-         * @param {any} recipeData
+         * @param {any} recipe
          * @param {any} successCallback
+         * @param {any} errorCallback
          */
-        this.updateRecipe = function (id, recipeData, successCallback) {
-            $http.put(baseURL + '/recipes/' + id, recipeData)
-                .then(successCallback, this.errorAlert);
+        this.updateRecipe = function (id, recipe, successCallback, errorCallback) {
+            console.log(recipe);
+            $http.put(baseURL + '/recipes/' + id, recipe)
+                .then(successCallback, errorCallback);
         };
 
         /**
          * 
          * 
-         * @param {any} recipeData
+         * @param {any} recipe
          * @param {any} successCallback
          */
-        this.addRecipe = function (recipeData, successCallback) {
-            $http.post(baseURL + '/recipes', recipeData)
-                .then(successCallback, this.errorAlert);
+        this.addRecipe = function (recipe, successCallback, errorCallback) {
+            console.log(recipe);
+            $http.post(baseURL + '/recipes/', recipe)
+                .then(successCallback, errorCallback);
         };
 
         /**
@@ -113,5 +116,7 @@
                 "Status Code: " + response.status + "\n" +
                 "Status Text: " + (response.text ||  "(message unavailable)"));
         };
+
     }
+
 })();

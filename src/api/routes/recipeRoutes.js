@@ -20,12 +20,12 @@ var recipeFields = {
   },
   prepTime: {
     required: false,
-    dataType: 'string',
+    dataType: 'number',
     displayName: 'Prep Time'
   },
   cookTime: {
     required: false,
-    dataType: 'string',
+    dataType: 'number',
     displayName: 'Cook Time'
   },
   ingredients: {
@@ -69,7 +69,7 @@ var recipeFields = {
 // validation routine
 // look to see if all fields are there.
 // todo: check properties are of correct type
-var validateRecipe = function(request) {
+var validateRecipe = function (request) {
   var results = {
     complete: true,
     recipe: {},
@@ -196,26 +196,30 @@ function validateFieldDataType(item, field, value, prefix) {
 // function to create case-insensitive searches
 function returnSearchRegex(value) {
   var regex = new RegExp(value, 'i');
-  return { "$regex": regex };
+  return {
+    "$regex": regex
+  };
 }
 
 // add new foodItems to the foodItems collection
-var addIngredients = function(ingredients, ingDB) {
-  var foodItems = ingredients.map(function(obj) {
+var addIngredients = function (ingredients, ingDB) {
+  var foodItems = ingredients.map(function (obj) {
     return (obj.foodItem);
   });
-  ingDB.find({}, function(err, objs) {
+  ingDB.find({}, function (err, objs) {
     var data = [];
-    var currentItems = objs.map(function(obj) {
+    var currentItems = objs.map(function (obj) {
       return (obj.name.toUpperCase());
     });
-    foodItems.forEach(function(foodItem, index, arr) {
+    foodItems.forEach(function (foodItem, index, arr) {
       if (currentItems.indexOf(foodItem.toUpperCase()) === -1) {
-        data.push({ "name": foodItem });
+        data.push({
+          "name": foodItem
+        });
       }
     });
     if (data.length > 0) {
-      ingDB.insert(data, function(err, newDoc) {
+      ingDB.insert(data, function (err, newDoc) {
         if (err) {
           res.status(500).json(err);
         } else {
@@ -227,16 +231,16 @@ var addIngredients = function(ingredients, ingDB) {
 };
 
 // create routes
-var routes = function(db, ingDB) {
+var routes = function (db, ingDB) {
   var recipeRouter = express.Router();
 
   recipeRouter.route('/')
-    .post(function(req, res) {
+    .post(function (req, res) {
       var cleaned = validateRecipe(req.body);
       var recipe = cleaned.recipe;
       if (cleaned.complete) {
         addIngredients(recipe.ingredients, ingDB);
-        db.insert(recipe, function(err, newDoc) {   // Callback is optional
+        db.insert(recipe, function (err, newDoc) { // Callback is optional
           if (err) {
             res.status(500).json(err);
           } else {
@@ -247,7 +251,7 @@ var routes = function(db, ingDB) {
         res.status(400).json(cleaned.error);
       }
     })
-    .get(function(req, res) {
+    .get(function (req, res) {
 
       // by default search for all
       var query = {};
@@ -260,7 +264,9 @@ var routes = function(db, ingDB) {
         // allow for case-insensitive search
         query.category = returnSearchRegex(req.query.category);
       }
-      db.find(query).sort({ name: 1 }).exec(function(err, recipes) {
+      db.find(query).sort({
+        name: 1
+      }).exec(function (err, recipes) {
         if (err) {
           res.status(500).json(err);
         } else {
@@ -272,8 +278,10 @@ var routes = function(db, ingDB) {
   // middleware for single recipe
   // used for get, put, patch, remove
   // retrieves 1 recipe and attachs to req object
-  recipeRouter.use('/:recipeId', function(req, res, next) {
-    db.findOne({ _id: req.params.recipeId }, function(err, recipe) {
+  recipeRouter.use('/:recipeId', function (req, res, next) {
+    db.findOne({
+      _id: req.params.recipeId
+    }, function (err, recipe) {
       if (err) {
         res.status(500).send(err);
       } else if (recipe) {
@@ -288,14 +296,18 @@ var routes = function(db, ingDB) {
 
   // find specific recipe by ID
   recipeRouter.route('/:recipeId')
-    .get(function(req, res) {
+    .get(function (req, res) {
       res.json(req.recipe);
     })
-    .put(function(req, res) {
+    .put(function (req, res) {
       var cleaned = validateRecipe(req.body);
       var recipe = cleaned.recipe;
       if (cleaned.complete) {
-        db.update({ "_id": req.recipe._id }, recipe, { multi: false }, function(err, numReplaced) {
+        db.update({
+          "_id": req.recipe._id
+        }, recipe, {
+          multi: false
+        }, function (err, numReplaced) {
           if (err) {
             res.status(500).send(err);
           } else {
@@ -307,7 +319,7 @@ var routes = function(db, ingDB) {
         res.status(400).send(cleaned.error);
       }
     })
-    .patch(function(req, res) {
+    .patch(function (req, res) {
       if (req.body._id) {
         delete req.body._id;
       }
@@ -315,7 +327,11 @@ var routes = function(db, ingDB) {
       for (var p in req.body) {
         req.recipe[p] = req.body[p];
       }
-      db.update({ "_id": req.recipe._id }, req.recipe, { multi: false }, function(err, numReplaced) {
+      db.update({
+        "_id": req.recipe._id
+      }, req.recipe, {
+        multi: false
+      }, function (err, numReplaced) {
         if (err) {
           res.status(500).send(err);
         } else {
@@ -323,8 +339,8 @@ var routes = function(db, ingDB) {
         }
       });
     })
-    .delete(function(req, res) {
-      db.remove(req.recipe, {}, function(err, numRemoved) {
+    .delete(function (req, res) {
+      db.remove(req.recipe, {}, function (err, numRemoved) {
         if (err) {
           res.status(500).send(err);
         } else {
