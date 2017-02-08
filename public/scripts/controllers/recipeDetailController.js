@@ -63,21 +63,21 @@
         };
 
         /**
-         * 
+         * @name updateRecipe
+         * @desc Sends the request to update a recipe with a recipe data. It also provides API error handling
+         * @param {Object} recipe   - Recipe object to be saved
+         * @memberOf Controllers.RecipeDetailController
          */
         vm.updateRecipe = function (recipe) {
-            console.log(JSON.stringify(recipe));
             dataService.updateRecipe(
                 recipe._id,
                 recipe,
                 function (response) {
-                    console.log(response);
                     vm.hasErrors = false;
                     vm.recipe = response.data.errors;
                     vm.goBack();
                 },
                 function (errors) {
-                    console.log(errors);
                     vm.hasErrors = true;
                     vm.validationErrors = errors.data.errors;
                 }
@@ -85,7 +85,10 @@
         };
 
         /**
-         * 
+         * @name addNewRecipe
+         * @desc Sends the request to add a new recipe with a recipe data. It also provides API error handling
+         * @param {Object} recipe   - Recipe object to be saved
+         * @memberOf Controllers.RecipeDetailController
          */
         vm.addNewRecipe = function (recipe) {
             dataService.addRecipe(
