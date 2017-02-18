@@ -6,8 +6,7 @@
   "scripts": {
     "start": "nodemon ./src/index.js localhost 5000",
     "db": "node ./src/api/data/seed.js",
-    "test": "mocha",
-    "test:watch": "mocha --watch ./test ./"
+    "test": "karma start public/karma.conf.js"
   },
   "author": "Treehouse Island, Inc.",
   "license": "ISC",
@@ -20,8 +19,13 @@
     "nedb": "^1.8.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0",
+    "angular-mocks": "^1.6.2",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.4.1",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-safari-launcher": "^1.0.0",
     "nodemon": "^1.9.1"
   }
 }
